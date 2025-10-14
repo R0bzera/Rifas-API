@@ -30,6 +30,7 @@ namespace Rifa.Infrastructure.Extensions
             services.AddScoped<IPaymentService, MercadoPagoPaymentService>();
             services.AddScoped<IPaymentStatusService, PaymentStatusService>();
             services.AddScoped<IPaymentOrderService, PaymentOrderService>();
+            services.AddScoped<IPaymentConsultationService, PaymentConsultationService>();
             services.AddScoped<IPaymentOrderRepository, PaymentOrderRepository>();
 
             return services;
