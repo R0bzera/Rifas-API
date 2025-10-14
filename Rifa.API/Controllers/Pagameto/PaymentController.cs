@@ -13,6 +13,7 @@ namespace Rifa.API.Controllers.Pagameto
         private readonly CreatePixPaymentWithOrderUseCase _createPixPaymentWithOrderUseCase;
         private readonly IPaymentService _paymentService;
         private readonly IPaymentConsultationService _paymentConsultationService;
+        private readonly IPaymentOrderRepository _paymentOrderRepository;
         private readonly ILogger<PaymentController> _logger;
 
         public PaymentController(
@@ -20,12 +21,14 @@ namespace Rifa.API.Controllers.Pagameto
             CreatePixPaymentWithOrderUseCase createPixPaymentWithOrderUseCase,
             IPaymentService paymentService,
             IPaymentConsultationService paymentConsultationService,
+            IPaymentOrderRepository paymentOrderRepository,
             ILogger<PaymentController> logger)
         {
             _createPixPaymentUseCase = createPixPaymentUseCase;
             _createPixPaymentWithOrderUseCase = createPixPaymentWithOrderUseCase;
             _paymentService = paymentService;
             _paymentConsultationService = paymentConsultationService;
+            _paymentOrderRepository = paymentOrderRepository;
             _logger = logger;
         }
 
@@ -156,6 +159,57 @@ namespace Rifa.API.Controllers.Pagameto
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving payment status for PaymentId: {PaymentId}", paymentId);
+                return StatusCode(500, new
+                {
+                    message = "Erro interno do servidor",
+                    error = ex.Message,
+                    timestamp = DateTime.UtcNow
+                });
+            }
+        }
+
+        /// <summary>
+        /// Busca dados do pagamento por ID do pedido
+        /// </summary>
+        [HttpGet("by-pedido/{pedidoId:guid}")]
+        public async Task<IActionResult> GetPaymentByPedidoId(Guid pedidoId)
+        {
+            try
+            {
+                if (pedidoId == Guid.Empty)
+                {
+                    _logger.LogWarning("Invalid pedido ID provided: {PedidoId}", pedidoId);
+                    return BadRequest("ID do pedido inválido");
+                }
+
+                _logger.LogInformation("Buscando pagamento por pedido ID. PedidoId: {PedidoId}", pedidoId);
+
+                // Buscar payment order por pedido ID
+                var paymentOrder = await _paymentOrderRepository.ObterPorPedidoIdAsync(pedidoId);
+                
+                if (paymentOrder == null)
+                {
+                    _logger.LogWarning("Nenhum pagamento encontrado para o pedido. PedidoId: {PedidoId}", pedidoId);
+                    return NotFound(new { message = "Nenhum pagamento encontrado para este pedido" });
+                }
+
+                // Buscar dados completos do pagamento
+                var paymentData = await _paymentService.GetPaymentStatusAsync(paymentOrder.PaymentId);
+                
+                _logger.LogInformation("Pagamento encontrado. PedidoId: {PedidoId}, PaymentId: {PaymentId}, Status: {Status}", 
+                    pedidoId, paymentOrder.PaymentId, paymentData.Status);
+                
+                return Ok(new
+                {
+                    payment = paymentData,
+                    paymentOrderId = paymentOrder.Id,
+                    pedidoId = paymentOrder.PedidoId,
+                    timestamp = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving payment by pedido ID: {PedidoId}", pedidoId);
                 return StatusCode(500, new
                 {
                     message = "Erro interno do servidor",

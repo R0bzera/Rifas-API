@@ -20,6 +20,12 @@ namespace Rifa.Infrastructure.Repository
                 .FirstOrDefaultAsync(po => po.PaymentId == paymentId);
         }
 
+        public async Task<PaymentOrder?> ObterPorPedidoIdAsync(Guid pedidoId)
+        {
+            return await _context.payment_orders
+                .FirstOrDefaultAsync(po => po.PedidoId == pedidoId);
+        }
+
         public async Task<PaymentOrder> CriarAsync(PaymentOrder paymentOrder)
         {
             _context.payment_orders.Add(paymentOrder);
