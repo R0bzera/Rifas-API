@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rifa.API", "Rifa.API\Rifa.API.csproj", "{3DDFC84A-41B9-4BB1-8B64-328F5C65D780}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rifa.Application", "Rifa.Application\Rifa.Application.csproj", "{7A4BDC1D-5E7C-4583-8BC0-71F298FA951C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rifa.Domain", "Rifa.Domain\Rifa.Domain.csproj", "{E994A57B-D013-41B4-A5DC-5B3EF52196C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rifa.Infrastructure", "Rifa.Infrastructure\Rifa.Infrastructure.csproj", "{EADFC74C-0F61-4C4F-9953-A132184DA5BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DDFC84A-41B9-4BB1-8B64-328F5C65D780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DDFC84A-41B9-4BB1-8B64-328F5C65D780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DDFC84A-41B9-4BB1-8B64-328F5C65D780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DDFC84A-41B9-4BB1-8B64-328F5C65D780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A4BDC1D-5E7C-4583-8BC0-71F298FA951C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A4BDC1D-5E7C-4583-8BC0-71F298FA951C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A4BDC1D-5E7C-4583-8BC0-71F298FA951C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A4BDC1D-5E7C-4583-8BC0-71F298FA951C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E994A57B-D013-41B4-A5DC-5B3EF52196C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E994A57B-D013-41B4-A5DC-5B3EF52196C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E994A57B-D013-41B4-A5DC-5B3EF52196C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E994A57B-D013-41B4-A5DC-5B3EF52196C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EADFC74C-0F61-4C4F-9953-A132184DA5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADFC74C-0F61-4C4F-9953-A132184DA5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EADFC74C-0F61-4C4F-9953-A132184DA5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EADFC74C-0F61-4C4F-9953-A132184DA5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D465CF16-4B8A-47AF-9B41-7B98A7B0D9B1}
+	EndGlobalSection
+EndGlobal

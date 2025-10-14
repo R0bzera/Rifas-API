@@ -1,0 +1,62 @@
+## Visual Studio e .NET
+# Build e cache
+[Bb]in/
+[Oo]bj/
+[Dd]ebug*/
+[Rr]elease*/
+.vs/
+*.pdb
+*.log
+*.tmp
+
+# IDE
+*.user
+*.suo
+*.rsuser
+*.userosscache
+*.userprefs
+.vscode/
+.idea/
+
+# Dependências externas
+node_modules/
+**/[Pp]ackages/*
+
+# Testes e cobertura
+TestResult*/
+coverage*.*
+*.coverage
+*.coveragexml
+
+# Publish / Deploy
+publish/
+*.pubxml
+*.publishproj
+*.azurePubxml
+
+# Docker
+docker-compose.override.yml
+*.dockerfile.local
+
+# Secrets e variáveis de ambiente
+.env
+.env.*
+**/secrets.json
+
+# Ignorar todos os appsettings com segredos
+appsettings.*.json
+
+# Permitir o modelo base e arquivos de exemplo (sem segredos)
+!appsettings.json
+!appsettings.example.json
+!appsettings.Development.json.example
+
+# Ignorar ambientes reais
+**/appsettings.Development.json
+**/appsettings.Staging.json
+**/appsettings.Production.json
+
+# Banco de dados locais
+*.mdf
+*.ldf
+*.ndf
