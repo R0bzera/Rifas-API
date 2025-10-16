@@ -216,6 +216,112 @@ namespace Rifa.Application.Services
             }
         }
 
+        public async Task<SorteioResultadoDTO> SortearRifaAsync(Guid id)
+        {
+            try
+            {
+                var rifa = await _rifaRepository.ObterPorIdAsync(id);
+                if (rifa == null)
+                    throw new Exception($"Rifa com ID {id} não encontrada");
+
+                if (rifa.Finalizada)
+                    throw new Exception("Rifa já foi sorteada");
+
+                // Verificar se todas as cotas foram vendidas
+                var cotas = await _cotaRepository.ObterPorRifaAsync(id);
+                var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
+                
+                if (cotasVendidas != rifa.NumCotas)
+                    throw new Exception($"Rifa não está completa. Vendidas: {cotasVendidas}/{rifa.NumCotas}");
+
+                // Sortear número aleatório
+                var random = new Random();
+                var numeroSorteado = random.Next(1, rifa.NumCotas + 1);
+
+                // Encontrar o ganhador
+                var cotaGanhadora = cotas.FirstOrDefault(c => c.Numero == numeroSorteado);
+                if (cotaGanhadora?.UsuarioId == null)
+                    throw new Exception("Erro ao encontrar ganhador");
+
+                var ganhador = await _usuarioRepository.ObterPorIdAsync(cotaGanhadora.UsuarioId.Value);
+                if (ganhador == null)
+                    throw new Exception("Ganhador não encontrado");
+
+                // Finalizar rifa
+                await _rifaRepository.FinalizarAsync(id, cotaGanhadora.UsuarioId.Value);
+
+                return new SorteioResultadoDTO
+                {
+                    RifaId = id,
+                    RifaTitulo = rifa.Titulo,
+                    NumeroSorteado = numeroSorteado,
+                    GanhadorId = ganhador.Id,
+                    GanhadorNome = ganhador.Nome,
+                    GanhadorEmail = ganhador.Email,
+                    DataSorteio = DateTime.Now,
+                    SorteioRealizado = true,
+                    Mensagem = $"Número {numeroSorteado} foi sorteado! Ganhador: {ganhador.Nome}"
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao sortear rifa: {ex.Message}");
+            }
+        }
+
+        public async Task<StatusSorteioDTO> ObterStatusSorteioAsync(Guid id)
+        {
+            try
+            {
+                var rifa = await _rifaRepository.ObterPorIdAsync(id);
+                if (rifa == null)
+                    throw new Exception($"Rifa com ID {id} não encontrada");
+
+                var cotas = await _cotaRepository.ObterPorRifaAsync(id);
+                var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
+                var cotasDisponiveis = rifa.NumCotas - cotasVendidas;
+                var rifaCompleta = cotasVendidas == rifa.NumCotas;
+
+                string status;
+                int tempoRestanteSegundos = 0;
+
+                if (rifa.Finalizada)
+                {
+                    status = "Sorteada";
+                }
+                else if (rifaCompleta)
+                {
+                    status = "Pronta para sorteio";
+                }
+                else
+                {
+                    status = "Em andamento";
+                }
+
+                return new StatusSorteioDTO
+                {
+                    RifaId = id,
+                    RifaTitulo = rifa.Titulo,
+                    NumCotas = rifa.NumCotas,
+                    CotasVendidas = cotasVendidas,
+                    CotasDisponiveis = cotasDisponiveis,
+                    RifaCompleta = rifaCompleta,
+                    SorteioIniciado = false,
+                    SorteioFinalizado = rifa.Finalizada,
+                    DataSorteio = rifa.Finalizada ? rifa.DataAlteracao : null,
+                    NumeroSorteado = rifa.Finalizada ? cotas.FirstOrDefault(c => c.UsuarioId == rifa.GanhadorId)?.Numero : null,
+                    GanhadorId = rifa.GanhadorId,
+                    GanhadorNome = rifa.Ganhador?.Nome,
+                    TempoRestanteSegundos = tempoRestanteSegundos,
+                    Status = status
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter status do sorteio: {ex.Message}");
+            }
+        }
+
         private async Task<RifaDTO> MapToDTO(RifaEntity entity)
         {
             // Calcular cotas disponíveis de forma mais eficiente

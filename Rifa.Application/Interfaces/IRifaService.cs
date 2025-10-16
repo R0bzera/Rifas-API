@@ -11,5 +11,7 @@ namespace Rifa.Application.Interfaces
         Task<RifaDTO> AtualizarAsync(Guid id, AtualizacaoRifaDTO dto);
         Task FinalizarAsync(Guid id, FinalizarRifaDTO dto);
         Task ExcluirAsync(Guid id);
+        Task<SorteioResultadoDTO> SortearRifaAsync(Guid id);
+        Task<StatusSorteioDTO> ObterStatusSorteioAsync(Guid id);
     }
 }

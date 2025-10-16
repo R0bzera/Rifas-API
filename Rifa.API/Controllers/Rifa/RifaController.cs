@@ -239,5 +239,37 @@ namespace Rifa.API.Controllers.Rifa
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sortear/{id}")]
+        public async Task<IActionResult> SortearRifa(Guid id)
+        {
+            try
+            {
+                var resultado = await _rifaService.SortearRifaAsync(id);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("status-sorteio/{id}")]
+        public async Task<IActionResult> ObterStatusSorteio(Guid id)
+        {
+            try
+            {
+                var status = await _rifaService.ObterStatusSorteioAsync(id);
+                return Ok(status);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
