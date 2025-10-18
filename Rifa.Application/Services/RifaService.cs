@@ -269,6 +269,43 @@ namespace Rifa.Application.Services
             }
         }
 
+        public async Task<NumeroSorteadoDTO> GerarNumeroSorteadoAsync(Guid id)
+        {
+            try
+            {
+                var rifa = await _rifaRepository.ObterPorIdAsync(id);
+                if (rifa == null)
+                    throw new Exception($"Rifa com ID {id} não encontrada");
+
+                if (rifa.Finalizada)
+                    throw new Exception("Rifa já foi sorteada");
+
+                // Verificar se todas as cotas foram vendidas
+                var cotas = await _cotaRepository.ObterPorRifaAsync(id);
+                var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
+                
+                if (cotasVendidas != rifa.NumCotas)
+                    throw new Exception($"Rifa não está completa. Vendidas: {cotasVendidas}/{rifa.NumCotas}");
+
+                // Gerar número aleatório entre 1 e NumCotas
+                var random = new Random();
+                var numeroSorteado = random.Next(1, rifa.NumCotas + 1);
+
+                return new NumeroSorteadoDTO
+                {
+                    RifaId = id,
+                    NumeroSorteado = numeroSorteado,
+                    TotalCotas = rifa.NumCotas,
+                    DataGeracao = DateTime.Now,
+                    Mensagem = $"Número {numeroSorteado} gerado para rifa com {rifa.NumCotas} cotas"
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao gerar número sorteado: {ex.Message}");
+            }
+        }
+
         public async Task<StatusSorteioDTO> ObterStatusSorteioAsync(Guid id)
         {
             try

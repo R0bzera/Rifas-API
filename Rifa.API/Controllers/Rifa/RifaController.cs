@@ -10,11 +10,13 @@ namespace Rifa.API.Controllers.Rifa
     public class RifaController : ControllerBase
     {
         private readonly IRifaService _rifaService;
+        private readonly ICotaRepository _cotaRepository;
         private const string ImageDirectory = @"C:\imagens";
 
-        public RifaController(IRifaService rifaService)
+        public RifaController(IRifaService rifaService, ICotaRepository cotaRepository)
         {
             _rifaService = rifaService;
+            _cotaRepository = cotaRepository;
             
             if (!Directory.Exists(ImageDirectory))
             {
@@ -257,6 +259,22 @@ namespace Rifa.API.Controllers.Rifa
         }
 
         [AllowAnonymous]
+        [HttpPost]
+        [Route("gerar-numero-sorteado/{id}")]
+        public async Task<IActionResult> GerarNumeroSorteado(Guid id)
+        {
+            try
+            {
+                var resultado = await _rifaService.GerarNumeroSorteadoAsync(id);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("status-sorteio/{id}")]
         public async Task<IActionResult> ObterStatusSorteio(Guid id)
@@ -265,6 +283,34 @@ namespace Rifa.API.Controllers.Rifa
             {
                 var status = await _rifaService.ObterStatusSorteioAsync(id);
                 return Ok(status);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("verificar-sorteio-automatico/{id}")]
+        public async Task<IActionResult> VerificarSorteioAutomatico(Guid id)
+        {
+            try
+            {
+                var rifa = await _rifaService.ObterPorIdAsync(id);
+                if (rifa == null)
+                    return NotFound(new { message = "Rifa não encontrada" });
+
+                var cotas = await _cotaRepository.ObterPorRifaAsync(id);
+                var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
+                var rifaCompleta = cotasVendidas == rifa.NumCotas;
+
+                return Ok(new { 
+                    rifaCompleta = rifaCompleta,
+                    cotasVendidas = cotasVendidas,
+                    totalCotas = rifa.NumCotas,
+                    finalizada = rifa.Finalizada
+                });
             }
             catch (Exception ex)
             {

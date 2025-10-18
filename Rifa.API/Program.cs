@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rifa.API;
+using Rifa.API.Services;
 using Rifa.Application.Models;
 using Rifa.Application.Usecases;
 using Rifa.Infrastructure.Extensions;
@@ -145,6 +146,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Registrar serviços de sorteio automático
+builder.Services.AddScoped<Rifa.Application.Interfaces.ISorteioAutomaticoService, Rifa.Application.Services.SorteioAutomaticoService>();
+builder.Services.AddHostedService<SorteioBackgroundService>();
 
 var app = builder.Build();
 
