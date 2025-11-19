@@ -229,12 +229,10 @@ namespace Rifa.Infrastructure.Repository
         {
             try
             {
-                // Buscar todas as cotas disponíveis primeiro
                 var todasCotasDisponiveis = await _context.cotas_rifa
                     .Where(c => c.RifaId == rifaId && c.UsuarioId == null)
                     .ToListAsync();
 
-                // Embaralhar usando Random
                 var random = new Random();
                 var cotasEmbaralhadas = todasCotasDisponiveis.OrderBy(x => random.Next()).Take(quantidade);
 

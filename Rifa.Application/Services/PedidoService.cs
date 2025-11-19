@@ -161,7 +161,6 @@ namespace Rifa.Application.Services
 
         private async Task ReservarCotasParaPedido(Guid pedidoId, Guid rifaId, Guid usuarioId, int quantidade)
         {
-            // Usar seleção aleatória de cotas disponíveis
             var cotasDisponiveis = await _cotaRepository.ObterCotasAleatoriasDisponiveisAsync(rifaId, quantidade);
             
             if (!cotasDisponiveis.Any())

@@ -227,18 +227,15 @@ namespace Rifa.Application.Services
                 if (rifa.Finalizada)
                     throw new Exception("Rifa já foi sorteada");
 
-                // Verificar se todas as cotas foram vendidas
                 var cotas = await _cotaRepository.ObterPorRifaAsync(id);
                 var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
                 
                 if (cotasVendidas != rifa.NumCotas)
                     throw new Exception($"Rifa não está completa. Vendidas: {cotasVendidas}/{rifa.NumCotas}");
 
-                // Sortear número aleatório
                 var random = new Random();
                 var numeroSorteado = random.Next(1, rifa.NumCotas + 1);
 
-                // Encontrar o ganhador
                 var cotaGanhadora = cotas.FirstOrDefault(c => c.Numero == numeroSorteado);
                 if (cotaGanhadora?.UsuarioId == null)
                     throw new Exception("Erro ao encontrar ganhador");
@@ -247,7 +244,6 @@ namespace Rifa.Application.Services
                 if (ganhador == null)
                     throw new Exception("Ganhador não encontrado");
 
-                // Finalizar rifa
                 await _rifaRepository.FinalizarAsync(id, cotaGanhadora.UsuarioId.Value);
 
                 return new SorteioResultadoDTO
@@ -280,14 +276,12 @@ namespace Rifa.Application.Services
                 if (rifa.Finalizada)
                     throw new Exception("Rifa já foi sorteada");
 
-                // Verificar se todas as cotas foram vendidas
                 var cotas = await _cotaRepository.ObterPorRifaAsync(id);
                 var cotasVendidas = cotas.Count(c => c.UsuarioId != null);
                 
                 if (cotasVendidas != rifa.NumCotas)
                     throw new Exception($"Rifa não está completa. Vendidas: {cotasVendidas}/{rifa.NumCotas}");
 
-                // Gerar número aleatório entre 1 e NumCotas
                 var random = new Random();
                 var numeroSorteado = random.Next(1, rifa.NumCotas + 1);
 
@@ -361,7 +355,6 @@ namespace Rifa.Application.Services
 
         private async Task<RifaDTO> MapToDTO(RifaEntity entity)
         {
-            // Calcular cotas disponíveis de forma mais eficiente
             var cotasDisponiveis = await _cotaRepository.ContarCotasDisponiveisPorRifaAsync(entity.Id);
 
             return new RifaDTO
