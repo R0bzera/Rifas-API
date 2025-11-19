@@ -58,7 +58,7 @@ namespace Rifa.Infrastructure.ExternalsCalls
                             Number = request.DocumentNumber
                         }
                     },
-                    DateOfExpiration = DateTime.Now.AddHours(24) // Expira em 24h
+                    DateOfExpiration = DateTime.Now.AddMinutes(5)
                 };
 
                 var client = new PaymentClient();
