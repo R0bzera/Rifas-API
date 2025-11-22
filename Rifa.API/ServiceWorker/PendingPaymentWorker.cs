@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Rifa.Application.Interfaces;
+﻿using Rifa.Application.Interfaces;
 
 namespace Rifa.API.ServiceWorker
 {
