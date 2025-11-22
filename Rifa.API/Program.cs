@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rifa.API;
+using Rifa.API.ServiceWorker;
 using Rifa.Application.Models;
 using Rifa.Application.Usecases;
 using Rifa.Infrastructure.Extensions;
@@ -32,6 +33,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddHostedService<PendingPaymentWorker>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 var key = Encoding.ASCII.GetBytes(jwtSettings!.SecretKey);
