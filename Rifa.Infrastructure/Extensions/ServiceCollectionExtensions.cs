@@ -33,6 +33,9 @@ namespace Rifa.Infrastructure.Extensions
             services.AddScoped<IPaymentConsultationService, PaymentConsultationService>();
             services.AddScoped<IPaymentOrderRepository, PaymentOrderRepository>();
 
+            services.AddScoped<IWorkerService, WorkerService>();
+            services.AddScoped<IWorkerRepository, WorkerRepository>();
+
             return services;
         }
     }
